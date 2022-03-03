@@ -1,32 +1,36 @@
 pipeline {
-    agent {
-            label 'Build-server-1'
-    }
-    tools{
-        maven 'mymaven'
-        jdk 'java'
+    agent any
+    tools {
+        maven 'maven3'
+        jdk 'jdk8'
     }
     stages {
-        stage('validate') {
+        stage('Code Validate') {
             steps {
                 sh 'mvn validate'
             }
         }
-        stage('compile') {
+        stage('Code Compile') {
             steps {
                 sh 'mvn compile'
             }
         }
-        stage('test') {
+        stage('Code Test') {
             steps {
                 sh 'mvn test'
             }
         }
-         stage('package') {
+        stage('Packing') {
             steps {
                 sh 'mvn package'
             }
         }
-
     }
-}
+    post {
+      success{
+          junit 'target/surefire-reports/*.xml'
+      }
+ 
+    }
+    }
+
